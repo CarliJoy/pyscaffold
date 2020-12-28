@@ -66,6 +66,23 @@ def default_prompt(
 
 
 class ArgumentParser(OriginalParser):
+    """Extends ArgumentParser to allow any interactive prompts variable calls.
+
+    This base class is used to prevent braking argparse while enabling adding
+    addtional arguments to the add_argument function.
+    """
+
+    def add_argument(self, *args, prompt: Prompt = default_prompt, **kwargs) -> Action:
+        """Similar to obj:`argparse.ArgumentParser.add_argument, but with an extra
+        ``prompt`` keyword argument.
+
+        By default :obj:`default_prompt` is used to ask the user in interactive mode,
+        unless `prompt=False`. A custom :obj:`PromptFn` callable can also be passed.
+        """
+        return super().add_argument(*args, **kwargs)
+
+
+class InteractiveArgumentParser(ArgumentParser):
     """Extends ArgumentParser to allow any interactive prompts.
 
     .. warning:: ``add_mutually_exclusive_group``, ``add_argument_group`` and

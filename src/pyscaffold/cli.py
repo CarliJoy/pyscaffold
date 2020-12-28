@@ -12,7 +12,7 @@ from . import __version__ as pyscaffold_version
 from . import api, templates
 from .actions import ScaffoldOpts
 from .actions import discover as discover_actions
-from .cli_parser import ArgumentParser
+from .cli_parser import ArgumentParser, InteractiveArgumentParser
 from .dependencies import check_setuptools_version
 from .exceptions import exceptions2exit
 from .extensions import list_from_entry_points as list_all_extensions
@@ -20,6 +20,11 @@ from .identification import get_id
 from .info import best_fit_license
 from .log import ReportFormatter, logger
 from .shell import shell_command_error2exit_decorator
+
+# Interactive is a special switch which is handled manually defining
+# the kind of parser used
+INTERACTIVE_SHORT = "-i"
+INTERACTIVE_LONG = "--interactive"
 
 
 def add_default_args(parser: ArgumentParser):
@@ -36,8 +41,8 @@ def add_default_args(parser: ArgumentParser):
         metavar="PROJECT_PATH",
     )
     parser.add_argument(
-        "-i",
-        "--interactive",
+        INTERACTIVE_SHORT,
+        INTERACTIVE_LONG,
         dest="command",
         action="store_const",
         const=lambda opts: run_scaffold(parser.prompt_user(opts)),
@@ -164,7 +169,14 @@ def parse_args(args: List[str]) -> ScaffoldOpts:
         dict: command line parameters
     """
     # create the argument parser
-    parser = ArgumentParser(
+    if INTERACTIVE_SHORT in args or INTERACTIVE_LONG in args:
+        TheArgumentParser = InteractiveArgumentParser
+    else:
+        # Use a not complex base class that only accepts but drops extra arguments
+        # intended for interactive use, so we can be sure the default prompt works
+        # as expected.
+        TheArgumentParser = ArgumentParser
+    parser = TheArgumentParser(
         description="PyScaffold is a tool for easily putting up the scaffold "
         "of a Python project."
     )

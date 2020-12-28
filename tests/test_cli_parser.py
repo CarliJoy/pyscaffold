@@ -2,7 +2,7 @@ import argparse
 
 import pytest
 
-from pyscaffold.cli_parser import ArgumentParser, is_included
+from pyscaffold.cli_parser import InteractiveArgumentParser, is_included
 from pyscaffold.extensions import include, store_with
 from pyscaffold.extensions.cirrus import Cirrus
 from pyscaffold.extensions.travis import Travis
@@ -22,7 +22,7 @@ def test_is_included():
 def test_merge_user_input_flag():
     existing_opts = {"name": "proj"}
 
-    parser = ArgumentParser()
+    parser = InteractiveArgumentParser()
     action = parser.add_argument(
         "-f",
         "--force",
@@ -42,7 +42,7 @@ def test_merge_user_input_flag():
 def test_merge_user_input_choices():
     existing_opts = {"name": "proj"}
 
-    parser = ArgumentParser()
+    parser = InteractiveArgumentParser()
     license_choices = ["mit", "gpl"]
 
     action = parser.add_argument(
@@ -63,7 +63,7 @@ def test_merge_user_input_choices():
 def test_merge_user_input_choices_type_coercion():
     existing_opts = {"name": "proj"}
 
-    parser = ArgumentParser()
+    parser = InteractiveArgumentParser()
     license_choices = ["mit", "gpl"]
 
     def _best_fit_license(_):
@@ -85,7 +85,7 @@ def test_merge_user_input_choices_type_coercion():
 def test_merge_user_input_list():
     existing_opts = {"name": "proj"}
 
-    parser = ArgumentParser()
+    parser = InteractiveArgumentParser()
     action = parser.add_argument(
         "-x", "--X", dest="x", type=int, choices=range(10), nargs="+"
     )
@@ -109,7 +109,7 @@ def test_merge_user_input_include():
     existing_opts = {"name": "proj"}
 
     included_extensions = [Cirrus(), Travis()]
-    parser = ArgumentParser()
+    parser = InteractiveArgumentParser()
     action = parser.add_argument(
         "-x", "--X", action=include(*included_extensions), required=False, nargs=0
     )
@@ -123,7 +123,7 @@ def test_merge_user_input_store_with():
     existing_opts = {"name": "proj"}
 
     included_extensions = [Cirrus(), Travis()]
-    parser = ArgumentParser()
+    parser = InteractiveArgumentParser()
     action = parser.add_argument(
         "-x",
         "--X",
