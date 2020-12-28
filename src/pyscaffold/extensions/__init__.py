@@ -19,7 +19,7 @@ else:
 ENTRYPOINT_GROUP = "pyscaffold.cli"
 
 if TYPE_CHECKING:
-    from ..cli_parser import InteractiveArgumentParser
+    from ..cli_parser import ArgumentParser
 
 
 class Extension:
@@ -67,7 +67,7 @@ class Extension:
         doc = " ".join([line.strip() for line in self.__doc__.split("\n")])
         return doc[0].lower() + doc[1:]
 
-    def augment_cli(self, parser: "InteractiveArgumentParser"):
+    def augment_cli(self, parser: "ArgumentParser"):
         """Augments the command-line interface parser.
 
         A command line argument ``--FLAG`` where FLAG=``self.name`` is added
